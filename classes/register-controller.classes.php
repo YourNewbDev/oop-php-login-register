@@ -1,6 +1,6 @@
 <?php
 
-class RegisterController {
+class RegisterController extends Register {
     private $user_username;
     private $user_password;
     private $confirm_password;
@@ -15,7 +15,7 @@ class RegisterController {
 
     }
 
-    private function registerUser () {
+    public function registerUser () {
        if ($this->isEmpty() == false) {
             header("location: ../index.php?error=emptyinput");
             exit();   
@@ -37,11 +37,13 @@ class RegisterController {
             exit();   
        }
 
-       $this->setUser();
+    //    $register = new Register();
+
+       $this->setUser($this->user_username, $this->user_password, $this->user_email);
     }
 
 
-    private function isEmpty () {
+    public function isEmpty () {
         $result ?? null;
 
         if (empty($this->user_username) || empty($this->user_password) || empty($this->confirm_password) || empty($this->user_email))  {
@@ -57,7 +59,7 @@ class RegisterController {
         return $result;
     }
 
-    private function invalidUsername() {
+    public function invalidUsername() {
         $result ?? null;
 
         if (!preg_match("/^[a-zA-Z0-9]*$/", $this->user_username)) {
@@ -70,7 +72,7 @@ class RegisterController {
         return $result;
     }
 
-    private function invalidEmail() {
+    public function invalidEmail() {
         $result ?? null;
 
         if (!filter_var($this->user_email, FILTER_VALIDATE_EMAIL)) {
@@ -83,7 +85,7 @@ class RegisterController {
         return $result;
     }
 
-    private function passwordMatch() {
+    public function passwordMatch() {
         $result ?? null;
 
         if ($this->user_password !== $this->confirm_password) {
@@ -96,12 +98,12 @@ class RegisterController {
         return $result;
     }
 
-    private function useremailTaken() {
+    public function useremailTaken() {
         $result ?? null;
 
-        $register = new Register();
+        // $register = new Register();
 
-        if ($register->checkUser($this->user_username, $this->user_email)) {
+        if (!$this->checkUser($this->user_username, $this->user_email)) {
             $result = false;
         }
         else {
